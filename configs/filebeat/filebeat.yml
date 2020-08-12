@@ -1,0 +1,56 @@
+name: <customer_id>
+
+#============================= Filebeat inputs ===============================
+# filebeat.inputs:
+#   - type: docker
+#     containers.ids: '*'
+#     cri.parse_flags: true
+
+#============================= Filebeat modules ===============================
+
+filebeat.config.modules:
+  # Glob pattern for configuration loading
+  path: ${path.config}/modules.d/*.yml
+
+  # Set to true to enable config reloading
+  reload.enabled: false
+
+  # Period on which files under path should be checked for changes
+  #reload.period: 10s
+
+#============================= Processors ===============================
+processors:
+- add_host_metadata: ~
+- add_cloud_metadata: ~
+
+#================================ Outputs =====================================
+#----------------------------- Logstash output --------------------------------
+output.logstash:
+  # The filebeat hosts
+  hosts: [ "<host>:7201" ]
+  # Enable SSL support. SSL is automatically enabled, if any SSL setting is set.
+  ssl.enabled: true
+  # Configure SSL verification mode. If `none` is configured, all server hosts
+  # and certificates will be accepted. In this mode, SSL based connections are
+  # susceptible to man-in-the-middle attacks. Use only for testing. Default is
+  # `full`.
+  ssl.verification_mode: full
+  # List of supported/valid TLS versions.
+  ssl.supported_protocols: [ TLSv1.2 ]
+  # List of root certificates for HTTPS server verifications
+  ssl.certificate_authorities: [ "/etc/ssl/as-collectors/antsec.cacerts" ]
+  # Certificate for SSL client authentication
+  ssl.certificate: "/etc/ssl/as-collectors/certificate.crt"
+  # Client Certificate Key
+  ssl.key: "/etc/ssl/as-collectors/certificate.key"
+
+#================================ Logging =====================================
+# Sets log level. The default log level is info.
+# Available log levels are: critical, error, warning, info, debug
+#logging.level: debug
+# At debug level, you can selectively enable logging only for some components.
+# To enable all selectors use ["*"]. Examples of other selectors are "beat",
+# "publish", "service".
+#logging.selectors: ["*"]
+
+logging.metrics.period: 600s
