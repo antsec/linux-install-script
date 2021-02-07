@@ -10,6 +10,17 @@ If you are unsure of anything we are here to help. Contact us and we will aid yo
 
 This installer provides a basic configuration out of the box, which might not suit your needs. Feel free to contact us for further configuration.
 
+Currently this works on Debian based linux systems. Tested platforms are:
+
+* Debian 9
+* Ubuntu 18.04.3 LTS
+
+# Requirements
+Please make sure the following requirements are available on the system:
+
+* wget
+* perl-Digest-SHA (shasum)
+
 # Installation
 - Either clone the repository or download the zip file and upload the files of the repository to the designated server
 - Extract the contents with 
