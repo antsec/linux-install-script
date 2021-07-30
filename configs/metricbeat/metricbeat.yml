@@ -1,0 +1,214 @@
+name: <customer_id>
+
+###################### Metricbeat Configuration Example #######################
+
+# This file is an example configuration file highlighting only the most common
+# options. The metricbeat.reference.yml file from the same directory contains all the
+# supported options with more comments. You can use it as a reference.
+#
+# You can find the full configuration reference here:
+# https://www.elastic.co/guide/en/beats/metricbeat/index.html
+
+#==========================  Modules configuration ============================
+
+metricbeat.config.modules:
+  # Glob pattern for configuration loading
+  path: ${path.config}/modules.d/*.yml
+
+  # Set to true to enable config reloading
+  reload.enabled: false
+
+  # Period on which files under path should be checked for changes
+  #reload.period: 10s
+
+#------------------------------- System Module -------------------------------
+
+metricbeat.modules:
+- module: system
+  metricsets:
+    - cpu             # CPU usage
+    - load            # CPU load averages
+    - memory          # Memory usage
+    - network         # Network IO
+    #- process         # Per process metrics
+    #- process_summary # Process summary
+    - uptime          # System Uptime
+    #- core           # Per CPU core usage
+    #- diskio         # Disk IO
+    - filesystem     # File system usage for each mountpoint
+    #- fsstat         # File system summary metrics
+    #- raid           # Raid
+    #- socket         # Sockets and connection info (linux only)
+  enabled: true
+  period: 60s
+  processes: ['.*']
+
+  # Configure the metric types that are included by these metricsets.
+  cpu.metrics:  ["percentages"]  # The other available options are normalized_percentages and ticks.
+  core.metrics: ["percentages"]  # The other available option is ticks.
+
+  # A list of filesystem types to ignore. The filesystem metricset will not
+  # collect data from filesystems matching any of the specified types, and
+  # fsstats will not include data from these filesystems in its summary stats.
+  # If not set, types associated to virtual filesystems are automatically
+  # added when this information is available in the system (e.g. the list of
+  # `nodev` types in `/proc/filesystem`).
+  #filesystem.ignore_types: []
+
+  # These options allow you to filter out all processes that are not
+  # in the top N by CPU or memory, in order to reduce the number of documents created.
+  # If both the `by_cpu` and `by_memory` options are used, the union of the two sets
+  # is included.
+  #process.include_top_n:
+
+    # Set to false to disable this feature and include all processes
+    #enabled: true
+
+    # How many processes to include from the top by CPU. The processes are sorted
+    # by the `system.process.cpu.total.pct` field.
+    #by_cpu: 0
+
+    # How many processes to include from the top by memory. The processes are sorted
+    # by the `system.process.memory.rss.bytes` field.
+    #by_memory: 0
+
+#------------------------------- Apache Module -------------------------------
+#  - module: apache
+#   metricsets: ["status"]
+#   period: {{ mb_apache_period }}
+#   enabled: true
+
+#   # Apache hosts
+#   hosts: ["{{ mb_apache_host }}"]
+
+#   # Path to server status. Default server-status
+#   server_status_path: "{{ mb_apache_server_status }}"
+
+#   # Username of hosts.  Empty by default
+#   username: {{ mb_apache_username }}
+
+#   # Password of hosts. Empty by default
+#   password: {{ mb_apache_password }}
+
+#------------------------------- Docker Module -------------------------------
+# - module: docker
+#   metricsets:
+#     - "container"
+#     - "cpu"
+#     - "diskio"
+#     - "healthcheck"
+#     - "info"
+#     - "image"
+#     - "memory"
+#     - "network"
+#   hosts: ["{{ mb_docker_host }}"]
+#   period: {{ mb_docker_period }}
+#   enabled: true
+
+  # If set to true, replace dots in labels with `_`.
+  #labels.dedot: false
+
+  # If set to true, collects metrics per core.
+  #cpu.cores: true
+
+  # To connect to Docker over TLS you must specify a client and CA certificate.
+  #ssl:
+    #certificate_authority: "/etc/pki/root/ca.pem"
+    #certificate:           "/etc/pki/client/cert.pem"
+    #key:                   "/etc/pki/client/cert.key" #
+
+#------------------------------- Kubernetes Module -------------------------------
+# - module: kubernetes
+#   metricsets:
+#     - container
+#     - node
+#     - pod
+#     - system
+#     - volume
+#   hosts: ["{{ mb_kubernetes_host }}"]
+#   period: {{ mb_kubernetes_period }}
+#   enabled: true
+#   in_cluster: false
+#   add_metadata: true
+
+  #bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  #ssl.certificate_authorities:
+  #  - /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
+  #ssl.certificate: "/etc/pki/client/cert.pem"
+  #ssl.key: "/etc/pki/client/cert.key" 
+
+#-------------------------------- MySQL Module -------------------------------
+# - module: mysql
+#   metricsets:
+#     - "status"
+#   #  - "galera_status"
+#   period: {{ mb_mysql_period }}
+
+#   # Host DSN should be defined as "user:pass@tcp(127.0.0.1:3306)/"
+#   # The username and password can either be set in the DSN or using the username
+#   # and password config options. Those specified in the DSN take precedence.
+#   hosts: [ "{{ mb_mysql_host }}" ]
+
+#   # Username of hosts. Empty by default.
+#   username: {{ mb_mysql_username }}
+
+#   # Password of hosts. Empty by default.
+#   password: {{ mb_mysql_password }}
+
+#   # By setting raw to true, all raw fields from the status metricset will be added to the event.
+#   #raw: false
+
+#-------------------------------- Nginx Module -------------------------------
+# - module: nginx
+#   metricsets: ["stubstatus"]
+#   enabled: true
+#   period: {{ mb_nginx_period }}
+
+#   # Nginx hosts
+#   hosts: ["{{ mb_nginx_host }}"]
+
+#   # Path to server status. Default server-status
+#   server_status_path: "{{ mb_nginx_server_status }}"
+
+#================================ Outputs =====================================
+
+# Configure what output to use when sending the data collected by the beat.
+
+#----------------------------- Logstash output --------------------------------
+output.logstash:
+  # The filebeat hosts
+  hosts: [ "<host>:7201" ]
+  # Enable SSL support. SSL is automatically enabled, if any SSL setting is set.
+  ssl.enabled: true
+  # Configure SSL verification mode. If `none` is configured, all server hosts
+  # and certificates will be accepted. In this mode, SSL based connections are
+  # susceptible to man-in-the-middle attacks. Use only for testing. Default is
+  # `full`.
+  ssl.verification_mode: full
+  # List of supported/valid TLS versions.
+  ssl.supported_protocols: [ TLSv1.2 ]
+  # List of root certificates for HTTPS server verifications
+  ssl.certificate_authorities: [ "/etc/ssl/as-collectors/antsec.cacerts" ]
+  # Certificate for SSL client authentication
+  ssl.certificate: "/etc/ssl/as-collectors/certificate.crt"
+  # Client Certificate Key
+  ssl.key: "/etc/ssl/as-collectors/certificate.key"
+
+#================================ Procesors =====================================
+
+# Configure processors to enhance or manipulate events generated by the beat.
+
+processors:
+  - add_host_metadata: ~
+  - add_cloud_metadata: ~
+
+#================================ Logging =====================================
+# Sets log level. The default log level is info.
+# Available log levels are: critical, error, warning, info, debug
+#logging.level: debug
+# At debug level, you can selectively enable logging only for some components.
+# To enable all selectors use ["*"]. Examples of other selectors are "beat",
+# "publish", "service".
+#logging.selectors: ["*"]
+
+logging.metrics.period: 600s

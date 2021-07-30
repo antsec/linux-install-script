@@ -1,0 +1,74 @@
+#################### Packetbeat Configuration #########################
+#============================== Network device ================================
+# Select the network interface to sniff the data. On Linux, you can use the
+# "any" keyword to sniff on all connected interfaces.
+packetbeat.interfaces.device: any
+#================================== Flows =====================================
+# Set `enabled: false` or comment out all options to disable flows reporting.
+packetbeat.flows:
+  # Set network flow timeout. Flow is killed if no packet is received before being
+  # timed out.
+  timeout: 30s
+  # Configure reporting period. If set to -1, only killed flows will be reported
+  period: 60s
+#========================== Transaction protocols =============================
+packetbeat.protocols:
+  - type: dns
+    # Configure the ports where to listen for DNS traffic. You can disable
+    # the DNS protocol by commenting out the list of ports.
+    ports: [53]
+    # include_authorities controls whether or not the dns.authorities field
+    # (authority resource records) is added to messages.
+    include_authorities: true
+    # include_additionals controls whether or not the dns.additionals field
+    # (additional resource records) is added to messages.
+    include_additionals: true
+  - type: http
+    # Configure the ports where to listen for HTTP traffic. You can disable
+    # the HTTP protocol by commenting out the list of ports.
+    ports: [80, 8080, 8000, 5000, 8002]
+  - type: tls
+    ports: [443, 8443]
+    send_certificates: true
+#================================ General =====================================
+name: <customer_id>
+
+#============================= Processors ===============================
+processors:
+- add_host_metadata: ~
+- add_cloud_metadata: ~
+
+#================================ Outputs =====================================
+
+# Configure what output to use when sending the data collected by the beat.
+
+#----------------------------- Logstash output --------------------------------
+output.logstash:
+  # The filebeat hosts
+  hosts: [ "<host>:7201" ]
+  # Enable SSL support. SSL is automatically enabled, if any SSL setting is set.
+  ssl.enabled: true
+  # Configure SSL verification mode. If `none` is configured, all server hosts
+  # and certificates will be accepted. In this mode, SSL based connections are
+  # susceptible to man-in-the-middle attacks. Use only for testing. Default is
+  # `full`.
+  ssl.verification_mode: full
+  # List of supported/valid TLS versions.
+  ssl.supported_protocols: [ TLSv1.2 ]
+  # List of root certificates for HTTPS server verifications
+  ssl.certificate_authorities: [ "/etc/ssl/as-collectors/antsec.cacerts" ]
+  # Certificate for SSL client authentication
+  ssl.certificate: "/etc/ssl/as-collectors/certificate.crt"
+  # Client Certificate Key
+  ssl.key: "/etc/ssl/as-collectors/certificate.key"
+
+#================================ Logging =====================================
+# Sets log level. The default log level is info.
+# Available log levels are: critical, error, warning, info, debug
+#logging.level: debug
+# At debug level, you can selectively enable logging only for some components.
+# To enable all selectors use ["*"]. Examples of other selectors are "beat",
+# "publish", "service".
+#logging.selectors: ["*"]
+
+logging.metrics.period: 600s
