@@ -14,6 +14,7 @@ Currently this works on Debian based linux systems. Tested platforms are:
 
 * Debian 9
 * Ubuntu 18.04.3 LTS
+* Ubuntu 20.04.4 LTS
 
 # Components
 The AntSec collector for Linux consists of 4 components.
