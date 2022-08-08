@@ -6,7 +6,7 @@ certificates_folder=certificates
 configs_folder=configs
 packages_folder=packages
 ssl_folder="/etc/ssl/as-collectors"
-current_version="7.17.1"
+current_version="7.17.4"
 current_dir=`pwd`
 
 #Check permissions
