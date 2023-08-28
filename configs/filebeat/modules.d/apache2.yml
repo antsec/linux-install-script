@@ -2,6 +2,8 @@
   # Access logs
   access:
     enabled: true
+    input:
+      ignore_older: 10m
 
     # Ingest Node pipeline to use. Options are `with_plugins` (default)
     # and `no_plugins`. Use `no_plugins` if you don't have the geoip or
@@ -20,6 +22,8 @@
   # Error logs
   error:
     enabled: true
+    input:
+      ignore_older: 10m
 
     # Set custom paths for the log files. If left empty,
     # Filebeat will choose the paths depending on your OS.

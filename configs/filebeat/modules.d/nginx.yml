@@ -5,6 +5,8 @@
   # Access logs
   access:
     enabled: true
+    input:
+      ignore_older: 10m
 
     # Set custom paths for the log files. If left empty,
     # Filebeat will choose the paths depending on your OS.
@@ -13,6 +15,8 @@
   # Error logs
   error:
     enabled: true
+    input:
+      ignore_older: 10m
 
     # Set custom paths for the log files. If left empty,
     # Filebeat will choose the paths depending on your OS.
