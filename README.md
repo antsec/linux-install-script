@@ -13,8 +13,10 @@ This installer provides a basic configuration out of the box, which might not su
 Currently this works on Debian based linux systems. Tested platforms are:
 
 * Debian 9
-* Ubuntu 18.04.3 LTS
-* Ubuntu 20.04.4 LTS
+* Debian 10
+* Ubuntu 18.04 LTS
+* Ubuntu 20.04 LTS
+* Ubuntu 22.04 LTS
 
 # Components
 The AntSec collector for Linux consists of 4 components.
