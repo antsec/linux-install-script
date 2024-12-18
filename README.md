@@ -14,6 +14,8 @@ Currently this works on Debian based linux systems. Tested platforms are:
 
 * Debian 9
 * Debian 10
+* Ubuntu 14.04 LTS
+* Ubuntu 16.04 LTS
 * Ubuntu 18.04 LTS
 * Ubuntu 20.04 LTS
 * Ubuntu 22.04 LTS
